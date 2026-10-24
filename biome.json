@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist"]
+    "includes": ["**", "!!**/dist", "!pnpm-lock.yaml"]
   },
   "formatter": {
     "enabled": true,

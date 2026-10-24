@@ -81,7 +81,7 @@ function generateIdDefault({ entry }: GenerateIdOptions): string {
 }
 
 async function sync(
-  { store, logger, config, renderMarkdown }: LoaderContext,
+  { store, logger, config, renderMarkdown, parseData }: LoaderContext,
   {
     baseUrl,
     dir,
@@ -103,17 +103,12 @@ async function sync(
   entries.sort();
   const pages = new Map<string, string>();
   for (const entry of entries) {
-    // Skip drafts and Word lock files
-    if (
-      entry
-        .split('/')
-        .some((segment) => segment.startsWith('_') || segment.startsWith('~$'))
-    )
-      continue;
     const id = String(generateId({ entry, base: baseUrl }));
     if (pages.has(id))
-      logger.warn(`Duplicate page id "${id}": ignoring ${entry}.`);
-    else pages.set(id, entry);
+      throw new Error(
+        `${pages.get(id)} and ${entry} have the same page id "${id}".`,
+      );
+    pages.set(id, entry);
   }
 
   const cachePath = '.astro/docx-loader/';
@@ -141,15 +136,15 @@ async function sync(
     const rendered = await renderMarkdown(await readFile(markdownUrl, 'utf8'), {
       fileURL: markdownUrl,
     });
+    // Without a Title-style paragraph, title is left out for the schema to reject
     const title = String(rendered.metadata?.frontmatter?.title ?? '').trim();
-    const fallback = id.slice(id.lastIndexOf('/') + 1);
-    if (!title)
-      logger.warn(
-        `${entry} has no paragraph in the Title style; using "${fallback}" as the page title.`,
-      );
     store.set({
       id,
-      data: { title: title || fallback },
+      data: await parseData({
+        id,
+        data: title ? { title } : {},
+        filePath: file,
+      }),
       digest,
       filePath: `${cachePath}${digest}/index.md`,
       rendered,

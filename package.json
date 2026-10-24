@@ -1,6 +1,6 @@
 {
   "name": "@eyr1n/astro-loader-docx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
