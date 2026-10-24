@@ -1,0 +1,39 @@
+{
+  "name": "@eyr1n/astro-loader-docx",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "filters"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "biome": "biome check"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "peerDependencies": {
+    "astro": ">=7"
+  },
+  "dependencies": {
+    "github-slugger": "^2.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.2",
+    "@types/node": "^22.20.5",
+    "astro": "^7.4.1",
+    "typescript": "^7.0.2"
+  }
+}
